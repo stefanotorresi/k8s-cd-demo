@@ -16,7 +16,10 @@ RUN apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS \
 # global dependencies
 RUN curl -fsSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=1.8.5 && \
     curl -fsSL https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/v0.2.0/php-fpm-healthcheck \
-         -o /usr/local/bin/php-fpm-healthcheck && chmod +x /usr/local/bin/php-fpm-healthcheck
+         -o /usr/local/bin/php-fpm-healthcheck && chmod +x /usr/local/bin/php-fpm-healthcheck && \
+    curl -fsSL https://raw.githubusercontent.com/vishnubob/wait-for-it/9995b721327eac7a88f0dce314ea074d5169634f/wait-for-it.sh \
+         -o /usr/local/bin/wait-for && chmod +x /usr/local/bin/wait-for
+
 
 # setup user
 WORKDIR /app

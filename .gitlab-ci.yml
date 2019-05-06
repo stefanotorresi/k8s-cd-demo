@@ -52,4 +52,4 @@ test:
   script:
     - docker-compose pull
     - docker-compose up -d || (docker-compose ps && docker-compose logs app && exit 1)
-    - docker-compose exec -T app phpunit
+    - docker-compose exec -T app sh -c "wait-for -t 60 $DB_HOST:$DB_PORT -- phpunit"
