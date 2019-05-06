@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
 
 variables:
   DOCKER_HOST: tcp://docker:2375
@@ -30,6 +31,7 @@ build:
       "
 
 test:
+  stage: test
   image:
     name: docker/compose:1.24.0
     entrypoint: [""]
