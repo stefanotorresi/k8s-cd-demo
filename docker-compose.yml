@@ -1,0 +1,34 @@
+version: "3.7"
+
+services:
+
+  app:
+    build:
+      context: .
+      target: dev
+      args:
+      - APP_UID=${APP_UID-1000}
+      - APP_GID=${APP_GID-1000}
+    volumes:
+    - .:/app
+    environment:
+    - COMPOSER_CACHE_DIR=/app/var/composer
+    env_file:
+    - .env
+    depends_on:
+    - database
+
+  reverse-proxy:
+    build:
+      context: infra/nginx
+    environment:
+      - PHP_FPM_HOST=app
+    depends_on:
+    - app
+
+  database:
+    image: 'bitnami/postgresql:10'
+    environment:
+    - POSTGRESQL_DATABASE=${DB_NAME}
+    - POSTGRESQL_USERNAME=${DB_USER}
+    - POSTGRESQL_PASSWORD=${DB_PASSWORD}

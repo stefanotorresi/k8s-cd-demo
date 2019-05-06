@@ -1,0 +1,8 @@
+/vendor
+*.cache
+.env
+.gitignore
+.gitlab-ci.yml
+.dockerignore
+Dockerfile
+docker-compose.yml*
