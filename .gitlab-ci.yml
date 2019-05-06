@@ -19,6 +19,12 @@ build:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - apk add --no-cache parallel
   script:
+    - "parallel docker pull ::: \
+        ${APP_BASE_IMAGE}:${CI_COMMIT_REF_SLUG} \
+        ${APP_DEV_IMAGE}:${CI_COMMIT_REF_SLUG} \
+        ${APP_IMAGE}:${CI_COMMIT_REF_SLUG} \
+        ${REVERSE_PROXY_IMAGE}:${CI_COMMIT_REF_SLUG} \
+       || true"
     - docker build . -t $APP_BASE_IMAGE:$CI_COMMIT_REF_SLUG --target base
     - docker build . -t $APP_DEV_IMAGE:$CI_COMMIT_REF_SLUG --target dev --cache-from $APP_BASE_IMAGE:$CI_COMMIT_REF_SLUG
     - docker build . -t $APP_IMAGE:$CI_COMMIT_REF_SLUG --cache-from $APP_DEV_IMAGE:$CI_COMMIT_REF_SLUG
