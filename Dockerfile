@@ -67,4 +67,4 @@ COPY --chown=app:app index.php ./
 COPY --chown=app:app src ./
 
 # rerun composer to trigger scripts and dump the autoloader
-RUN composer install $COMPOSER_FLAGS --no-dev --optimize
+RUN composer install $COMPOSER_FLAGS --no-dev --optimize-autoloader
