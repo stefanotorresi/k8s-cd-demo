@@ -81,6 +81,6 @@ SQL;
 
     public function dropSchema(): void
     {
-        $this->pdo->exec('DROP TABLE "todos";');
+        $this->pdo->exec('DROP TABLE IF EXISTS "todos";');
     }
 }
