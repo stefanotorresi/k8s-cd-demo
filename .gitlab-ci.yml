@@ -3,10 +3,10 @@ stages:
 
 variables:
   DOCKER_HOST: tcp://docker:2375
-  APP_IMAGE: ${CI_PROJECT_PATH}
-  APP_DEV_IMAGE: ${CI_PROJECT_PATH}/dev
-  APP_BASE_IMAGE: ${CI_PROJECT_PATH}/base
-  REVERSE_PROXY_IMAGE: ${CI_PROJECT_PATH}/fcgi-proxy
+  APP_IMAGE: $CI_REGISTRY_IMAGE
+  APP_DEV_IMAGE: ${CI_REGISTRY_IMAGE}/dev
+  APP_BASE_IMAGE: ${CI_REGISTRY_IMAGE}/base
+  REVERSE_PROXY_IMAGE: ${CI_REGISTRY_IMAGE}/fcgi-proxy
 
 build:
   stage: build
@@ -14,6 +14,7 @@ build:
   services:
     - docker:18.09-dind
   before_script:
+    - docker info
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - apk add --no-cache parallel
   script:
@@ -22,8 +23,31 @@ build:
     - docker build . -t $APP_IMAGE:$CI_COMMIT_REF_SLUG --cache-from $APP_DEV_IMAGE:$CI_COMMIT_REF_SLUG
     - docker build infra/nginx -t $REVERSE_PROXY_IMAGE:$CI_COMMIT_REF_SLUG
     - "parallel docker push ::: \
-        ${CI_REGISTRY}/${APP_IMAGE}:${CI_COMMIT_REF_SLUG} \
-        ${CI_REGISTRY}/${APP_DEV_IMAGE}:${CI_COMMIT_REF_SLUG} \
-        ${CI_REGISTRY}/${APP_BASE_IMAGE}:${CI_COMMIT_REF_SLUG} \
-        ${CI_REGISTRY}/${REVERSE_PROXY_IMAGE}:${CI_COMMIT_REF_SLUG} \
+        ${APP_IMAGE}:${CI_COMMIT_REF_SLUG} \
+        ${APP_DEV_IMAGE}:${CI_COMMIT_REF_SLUG} \
+        ${APP_BASE_IMAGE}:${CI_COMMIT_REF_SLUG} \
+        ${REVERSE_PROXY_IMAGE}:${CI_COMMIT_REF_SLUG} \
       "
+
+test:
+  image:
+    name: docker/compose:1.24.0
+    entrypoint: [""]
+  services:
+    - docker:18.09-dind
+  before_script:
+    - cp infra/docker-compose.ci.override.yml docker-compose.override.yml
+    - cp .env.example .env
+
+    # we need to resort to yaml processing, because, well... yaml.
+    - apk add --no-cache curl
+    - curl -sSL https://github.com/mikefarah/yq/releases/download/2.2.1/yq_linux_amd64 -o /usr/local/bin/yq
+      && chmod +x /usr/local/bin/yq
+    - yq d -i docker-compose.yml services.app.volumes
+
+    - docker info
+    - docker-compose config
+  script:
+    - docker-compose pull
+    - docker-compose up -d || (docker-compose ps && docker-compose logs app && exit 1)
+    - docker-compose exec -T app phpunit
