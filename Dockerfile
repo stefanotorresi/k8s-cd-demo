@@ -6,7 +6,7 @@ FROM php:7.3-fpm-alpine as base
 ARG COMPOSER_FLAGS
 
 # persistent deps
-RUN apk add --no-cache fcgi postgresql-dev
+RUN apk add --no-cache bash fcgi postgresql-dev
 
 # php extensions
 RUN apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS \

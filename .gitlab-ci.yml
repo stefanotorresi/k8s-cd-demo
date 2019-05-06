@@ -26,8 +26,14 @@ build:
         ${REVERSE_PROXY_IMAGE}:${CI_COMMIT_REF_SLUG} \
        || true"
     - docker build . -t $APP_BASE_IMAGE:$CI_COMMIT_REF_SLUG --target base
-    - docker build . -t $APP_DEV_IMAGE:$CI_COMMIT_REF_SLUG --target dev --cache-from $APP_BASE_IMAGE:$CI_COMMIT_REF_SLUG
-    - docker build . -t $APP_IMAGE:$CI_COMMIT_REF_SLUG --cache-from $APP_DEV_IMAGE:$CI_COMMIT_REF_SLUG
+        --cache-from $APP_BASE_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker build . -t $APP_DEV_IMAGE:$CI_COMMIT_REF_SLUG --target dev
+        --cache-from $APP_BASE_IMAGE:$CI_COMMIT_REF_SLUG
+        --cache-from $APP_DEV_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker build . -t $APP_IMAGE:$CI_COMMIT_REF_SLUG
+        --cache-from $APP_BASE_IMAGE:$CI_COMMIT_REF_SLUG
+        --cache-from $APP_DEV_IMAGE:$CI_COMMIT_REF_SLUG
+        --cache-from $APP_IMAGE:$CI_COMMIT_REF_SLUG
     - docker build infra/nginx -t $REVERSE_PROXY_IMAGE:$CI_COMMIT_REF_SLUG
     - "parallel docker push ::: \
         ${APP_IMAGE}:${CI_COMMIT_REF_SLUG} \
