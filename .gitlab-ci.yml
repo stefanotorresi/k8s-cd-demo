@@ -90,11 +90,11 @@ deploy preview:
   <<: *deploy
   script:
     - cd infra/helm-chart
+    - helm dependency build
     - helm upgrade --install demo-$CI_ENVIRONMENT_SLUG
       --set-string image.tag=$CI_COMMIT_REF_SLUG
       --set ingress.enabled=true
-      --set ingress.hosts[0]=${CI_COMMIT_REF_SLUG}.k8s-cd-demo.torresi.io
-      --set ingress.paths[0]='/'
+      --set ingress.host=${CI_COMMIT_REF_SLUG}.k8s-cd-demo.torresi.io
   only:
     - branches
   environment:
@@ -118,11 +118,11 @@ deploy production:
   <<: *deploy
   script:
     - cd infra/helm-chart
+    - helm dependency build
     - helm upgrade --install demo-$CI_ENVIRONMENT_SLUG
       --set-string image.tag=$CI_COMMIT_REF_SLUG
       --set ingress.enabled=true
-      --set ingress.hosts[0]=k8s-cd-demo.torresi.io
-      --set ingress.paths[0]='/'
+      --set ingress.host=k8s-cd-demo.torresi.io
   only:
     - master
   environment:
