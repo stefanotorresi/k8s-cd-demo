@@ -3,12 +3,11 @@
 namespace Acme;
 
 use PDO;
-use Ramsey\Uuid\Uuid;
 
 class ToDoRepository
 {
     public const SCHEMA = <<<SQL
-CREATE TABLE todos (
+CREATE TABLE IF NOT EXISTS todos (
     id uuid NOT NULL,
     content TEXT NOT NULL,
     PRIMARY KEY (id)
