@@ -67,6 +67,7 @@ RUN composer install $COMPOSER_FLAGS --no-scripts --no-autoloader --no-dev
 
 # copy project sources cherry picking only production files
 COPY --chown=app:app index.php ./
+COPY --chown=app:app init_db.php ./
 COPY --chown=app:app src ./src
 
 # rerun composer to trigger scripts and dump the autoloader

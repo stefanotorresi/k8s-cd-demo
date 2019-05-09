@@ -62,3 +62,9 @@ spec:
             httpGet:
               path: /
               port: http
+      initContainers:
+        - name: init-db
+          image: "registry.gitlab.com/stefanotorresi/k8s-cd-demo:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: [ 'sh', '-c', 'wait-for $DB_HOST:$DB_PORT -t 60 -- init_db.php ']
+
