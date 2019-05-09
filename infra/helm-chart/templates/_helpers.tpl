@@ -25,6 +25,15 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
+Re-create a default fully qualified name for the postgres subchart.
+This is just a hack around https://github.com/helm/helm/issues/3920
+Note that it effectively removes the ability to override the fullname via subchart values.
+*/}}
+{{- define "postgresql.fullname" -}}
+{{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "helm-chart.chart" -}}
