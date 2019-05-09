@@ -18,6 +18,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "helm-chart.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        acme/fingerprint: {{ .Values.deploymentFingerprint | quote }}
     spec:
       containers:
         - name: app
