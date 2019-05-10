@@ -65,6 +65,8 @@ class ToDoApp implements RequestHandler
             return new JsonResponse([ 'error' => $e->getMessage(), 'trace' => $e->getTrace()], 500);
         }
 
+        $response = $response->withHeader('X-Foo', 'bar');
+
         return $response;
     }
 
