@@ -66,5 +66,19 @@ spec:
         - name: init-db
           image: "registry.gitlab.com/stefanotorresi/k8s-cd-demo:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: [ 'sh', '-c', 'wait-for $DB_HOST:$DB_PORT -t 60 -- init_db.php ']
+          command: [ 'sh', '-c', 'wait-for $DB_HOST:$DB_PORT -t 60 -- /app/init_db.php ']
+          env:
+            - name: DB_HOST
+              value: {{ include "postgresql.fullname" . | quote }}
+            - name: DB_PORT
+              value: {{ .Values.postgresql.service.port | quote }}
+            - name: DB_NAME
+              value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+            - name: DB_USER
+              value: {{ .Values.postgresql.postgresqlUsername | quote }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "postgresql.fullname" . }}
+                  key: postgresql-password
 
