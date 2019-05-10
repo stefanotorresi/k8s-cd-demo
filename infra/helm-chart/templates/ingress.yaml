@@ -19,5 +19,5 @@ spec:
         paths:
           - backend:
               serviceName: {{ include "helm-chart.fullname" . }}
-              servicePort: http
+              servicePort: {{ .Values.service.port }}
 {{- end }}

@@ -11,9 +11,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+      targetPort: 80
   selector:
     app.kubernetes.io/name: {{ include "helm-chart.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
