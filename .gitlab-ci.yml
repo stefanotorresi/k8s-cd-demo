@@ -91,7 +91,7 @@ deploy preview:
   script:
     - cd infra/helm-chart
     - helm dependency build
-    - helm upgrade --install demo-$CI_ENVIRONMENT_SLUG
+    - helm upgrade --install demo-$CI_ENVIRONMENT_SLUG .
       --set-string image.tag=$CI_COMMIT_REF_SLUG
       --set-string deploymentFingerprint=$CI_COMMIT_SHORT_SHA
       --set ingress.enabled=true
@@ -121,7 +121,7 @@ deploy production:
   script:
     - cd infra/helm-chart
     - helm dependency build
-    - helm upgrade --install demo-$CI_ENVIRONMENT_SLUG
+    - helm upgrade --install demo-$CI_ENVIRONMENT_SLUG .
       --set-string image.tag=$CI_COMMIT_REF_SLUG
       --set-string deploymentFingerprint=$CI_COMMIT_SHORT_SHA
       --set ingress.enabled=true
