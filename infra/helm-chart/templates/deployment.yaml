@@ -47,7 +47,7 @@ spec:
             exec:
               command: [ 'php-fpm-healthcheck' ]
             initialDelaySeconds: 5
-        - name: {{ .Chart.Name }}-reverse-proxy
+        - name: reverse-proxy
           image: "registry.gitlab.com/stefanotorresi/k8s-cd-demo/fcgi-proxy:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
