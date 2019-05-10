@@ -82,7 +82,9 @@ test:
     - apk add --no-cache curl
     - mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
       && curl -sL https://github.com/digitalocean/doctl/releases/download/v1.17.0/doctl-1.17.0-linux-amd64.tar.gz | tar -xz
-    - ./doctl -t $DO_TOKEN kube cluster kubeconfig save demo
+    - ./doctl -t $DO_TOKEN kube cluster config save demo
+    - ./doctl -t $DO_TOKEN kube cluster config show demo
+    - kubectl config view
     - kubectl version
     - helm version
 
